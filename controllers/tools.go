@@ -8,13 +8,13 @@ import (
 )
 
 type CreateToolInput struct {
-	Name    string `json:"name" binding:"required"`
-	Version int    `json:"version" binding:"required"`
+	Name    string  `json:"name" binding:"required"`
+	Version float32 `json:"version" binding:"required"`
 }
 
 type UpdateToolInput struct {
-	Name    string `json:"name"`
-	Version int    `json:"version"`
+	Name    string  `json:"name"`
+	Version float32 `json:"version"`
 }
 
 func FindTools(c *gin.Context) {
