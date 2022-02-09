@@ -17,7 +17,7 @@ func main() {
 	r.PATCH("/tools/:name", controllers.UpdateTool)
 	r.DELETE("/tools/:name", controllers.DeleteTool)
 
-	err := r.Run()
+	err := r.Run(":5000")
 	if err != nil {
 		panic(err)
 	}
