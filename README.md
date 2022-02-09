@@ -11,7 +11,7 @@ This API is currently in a very early stage of development.
 
 There are a few nuances I'd like this repository to have.
 
-## GitFlow model
+### GitFlow model
 
 To structure the code within Git branches, we will use the GitFlow model. This approach consists of the following branches:
 
@@ -35,4 +35,10 @@ Please use [semantic versioning](https://semver.org/) for versioning when releas
 
 ### Local development
 
-TBD
+Run the following commands to run locally:
+
+```bash
+docker compose up -d
+
+go run main.go
+```
