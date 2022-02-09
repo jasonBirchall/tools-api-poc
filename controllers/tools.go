@@ -9,15 +9,15 @@ import (
 )
 
 type CreateToolInput struct {
-	Id      string         `json:"id"`
-	Name    string         `json:"name" binding:"required"`
-	Version models.Version `json:"version"`
+	Id   string `json:"id"`
+	Name string `json:"name" binding:"required"`
+	// Version models.Version `json:"version"`
 }
 
 type UpdateToolInput struct {
-	Id      string         `json:"id"`
-	Name    string         `json:"name"`
-	Version models.Version `json:"version"`
+	Id   string `json:"id"`
+	Name string `json:"name"`
+	// Version models.Version `json:"version"`
 }
 
 func FindTools(c *gin.Context) {
@@ -35,7 +35,7 @@ func CreateTool(c *gin.Context) {
 		return
 	}
 
-	tool := models.Tool{Id: xid.New().String(), Name: input.Name, Version: input.Version}
+	tool := models.Tool{Id: xid.New().String(), Name: input.Name}
 	models.DB.Create(&tool)
 
 	c.JSON(http.StatusOK, gin.H{"data": tool})
