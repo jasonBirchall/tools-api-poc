@@ -3,11 +3,15 @@ package models
 import (
 	"errors"
 
+	"github.com/go-redis/redis"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
+var (
+	DB          *gorm.DB
+	RedisClient *redis.Client
+)
 
 func ConnectDatabase() error {
 	dbURL := "postgres://pg:pass@localhost:5432/crud"
@@ -29,4 +33,14 @@ func ConnectDatabase() error {
 	}
 
 	return nil
+}
+
+func ConnectCache() {
+	r := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "",
+		DB:       0,
+	})
+
+	RedisClient = r
 }

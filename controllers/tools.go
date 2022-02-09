@@ -22,7 +22,12 @@ type UpdateToolInput struct {
 
 func FindTools(c *gin.Context) {
 	var tools []models.Tool
-	models.DB.Find(&tools)
+
+	val, err := models.RedisClient.Get("tools").Result()
+	if err == redis.Nil {
+		models.DB.Find(&tools)
+
+
 
 	c.JSON(http.StatusOK, gin.H{"data:": tools})
 }
