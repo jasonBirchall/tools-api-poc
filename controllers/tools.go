@@ -5,20 +5,23 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jasonbirchall/tools-api-poc/models"
+	"github.com/rs/xid"
 )
 
 type CreateToolInput struct {
-	Name    string  `json:"name" binding:"required"`
-	Version float32 `json:"version" binding:"required"`
+	Id      string         `json:"id"`
+	Name    string         `json:"name" binding:"required"`
+	Version models.Version `json:"version"`
 }
 
 type UpdateToolInput struct {
-	Name    string  `json:"name"`
-	Version float32 `json:"version"`
+	Id      string         `json:"id"`
+	Name    string         `json:"name"`
+	Version models.Version `json:"version"`
 }
 
 func FindTools(c *gin.Context) {
-	var tools []models.Tools
+	var tools []models.Tool
 	models.DB.Find(&tools)
 
 	c.JSON(http.StatusOK, gin.H{"data:": tools})
@@ -32,14 +35,14 @@ func CreateTool(c *gin.Context) {
 		return
 	}
 
-	tool := models.Tools{Name: input.Name, Version: input.Version}
+	tool := models.Tool{Id: xid.New().String(), Name: input.Name, Version: input.Version}
 	models.DB.Create(&tool)
 
 	c.JSON(http.StatusOK, gin.H{"data": tool})
 }
 
 func FindTool(c *gin.Context) {
-	var tool models.Tools
+	var tool models.Tool
 	if err := models.DB.Where("name = ?", c.Param("name")).First(&tool).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -49,7 +52,7 @@ func FindTool(c *gin.Context) {
 }
 
 func UpdateTool(c *gin.Context) {
-	var tool models.Tools
+	var tool models.Tool
 
 	if err := models.DB.Where("name = ?", c.Param("name")).First(&tool).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -68,7 +71,7 @@ func UpdateTool(c *gin.Context) {
 }
 
 func DeleteTool(c *gin.Context) {
-	var tool models.Tools
+	var tool models.Tool
 
 	if err := models.DB.Where("name = ?", c.Param("name")).First(&tool).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
