@@ -1,11 +1,12 @@
 package controllers
 
 import (
+	"hash/fnv"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jasonbirchall/tools-api-poc/models"
-	"github.com/rs/xid"
 )
 
 type CreateToolInput struct {
@@ -23,11 +24,7 @@ type UpdateToolInput struct {
 func FindTools(c *gin.Context) {
 	var tools []models.Tool
 
-	val, err := models.RedisClient.Get("tools").Result()
-	if err == redis.Nil {
-		models.DB.Find(&tools)
-
-
+	models.DB.Find(&tools)
 
 	c.JSON(http.StatusOK, gin.H{"data:": tools})
 }
@@ -40,7 +37,9 @@ func CreateTool(c *gin.Context) {
 		return
 	}
 
-	tool := models.Tool{Id: xid.New().String(), Name: input.Name}
+	hash := strconv.Itoa(int(generateHash(input.Name)))
+
+	tool := models.Tool{Id: hash, Name: input.Name}
 	models.DB.Create(&tool)
 
 	c.JSON(http.StatusOK, gin.H{"data": tool})
@@ -86,4 +85,25 @@ func DeleteTool(c *gin.Context) {
 	models.DB.Delete(&tool)
 
 	c.JSON(http.StatusOK, gin.H{"data": tool})
+}
+
+func PopulateTools(c *gin.Context) {
+	releases, err := GetAllTools()
+	if err != nil {
+		c.JSON(http.StatusFailedDependency, gin.H{"error": err.Error()})
+		return
+	}
+
+	for _, release := range releases {
+		hash := strconv.Itoa(int(generateHash(release.Name)))
+
+		tool := models.Tool{Id: hash, Name: release.Name}
+		models.DB.Create(&tool)
+	}
+}
+
+func generateHash(s string) uint32 {
+	h := fnv.New32a()
+	h.Write([]byte(s))
+	return h.Sum32()
 }

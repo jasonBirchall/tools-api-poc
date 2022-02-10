@@ -1,7 +1,7 @@
 package models
 
 type Tool struct {
-	Id      string  `gorm:"primary_key"`
+	Id      string  `gorm:"id"`
 	Name    string  `json:"name"`
 	Version float64 `json:"version"`
 	// PreviousVersions []float64 `json:"previous"`

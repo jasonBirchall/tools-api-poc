@@ -16,10 +16,9 @@ func main() {
 		log.Fatalf("Error connecting to database: %v", err)
 	}
 
-	models.ConnectCache()
-
 	r.GET("/tools", controllers.FindTools)
 	r.POST("/tools", controllers.CreateTool)
+	r.POST("/tools/testData", controllers.PopulateTools)
 	r.GET("/tools/:name", controllers.FindTool)
 	r.PATCH("/tools/:name", controllers.UpdateTool)
 	r.DELETE("/tools/:name", controllers.DeleteTool)
